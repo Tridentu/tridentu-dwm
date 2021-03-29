@@ -198,7 +198,9 @@ static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
 static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
+static void setlasttag(int tagbit);
 static void setfullscreen(Client *c, int fullscreen);
+static void fullscreen(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setup(void);
@@ -206,6 +208,7 @@ static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
+static void spawndefault();
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *);
@@ -264,6 +267,8 @@ static int running = 1;
 static Cur *cursor[CurLast];
 static Clr **scheme;
 static Display *dpy;
+static int lastchosentag[8];
+static int previouschosentag[8];
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
@@ -719,9 +724,10 @@ drawbar(Monitor *m)
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
 		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
+			drw_rect(drw, x + boxw, 0, w - ( 2 * boxw + 1), boxw,
+				 m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
 				urg & 1 << i);
+            
 		x += w;
 	}
 	w = blw = TEXTW(m->ltsymbol);
@@ -1497,6 +1503,35 @@ setfullscreen(Client *c, int fullscreen)
 	}
 }
 
+Layout *last_layout;
+void fullscreen(const Arg* arg){
+    if (selmon->showbar){
+     for(last_layout = (Layout *)layouts; last_layout != selmon->lt[selmon->sellt]; last_layout++);
+     setlayout(&((Arg) { .v = &layouts[2] }));
+    } else {
+        setlayout(&((Arg) { .v = last_layout }));
+    }
+    togglebar(arg);
+}
+
+void  setlasttag(int tagbit){
+    const int mon = selmon->num;
+    if(tagbit > 0){
+        int i = 1, pos = 0;
+        while (!(i & tagbit)){
+          i  = i << 1;
+          ++pos;
+        }
+        previouschosentag[mon] = lastchosentag[mon];
+        lastchosentag[mon] = pos;
+        
+    } else {
+        const int tempTag = lastchosentag[mon];
+        previouschosentag[mon] = lastchosentag[mon];
+        lastchosentag[mon] = tempTag;
+    }
+}
+
 void
 setlayout(const Arg *arg)
 {
@@ -1636,6 +1671,15 @@ sigchld(int unused)
 	while (0 < waitpid(-1, NULL, WNOHANG));
 }
 
+void spawndefault(){
+    const char* app = defaulttagapps[lastchosentag[selmon->num]];
+    if(app) {
+      const char* defaultcmd[] = { app, NULL}; 
+      Arg a = {.v = defaultcmd};
+      spawn(&a);
+    }
+}
+
 void
 spawn(const Arg *arg)
 {
@@ -1729,6 +1773,7 @@ toggletag(const Arg *arg)
 	newtags = selmon->sel->tags ^ (arg->ui & TAGMASK);
 	if (newtags) {
 		selmon->sel->tags = newtags;
+        setlasttag(newtags);
 		focus(NULL);
 		arrange(selmon);
 	}
@@ -2037,6 +2082,7 @@ view(const Arg *arg)
 {
 	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
 		return;
+    setlasttag(arg->ui);
 	selmon->seltags ^= 1; /* toggle sel tagset */
 	if (arg->ui & TAGMASK)
 		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
