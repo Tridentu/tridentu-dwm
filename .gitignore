@@ -1,3 +1,4 @@
 *.o
 dwm
 debian
+dwm-msg
