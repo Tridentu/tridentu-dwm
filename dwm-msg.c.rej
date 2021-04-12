@@ -1,0 +1,11 @@
+--- dwm-msg.c
++++ dwm-msg.c
+@@ -499,7 +499,7 @@
+   }
+ 
+   int i = 1;
+-  if (strcmp(argv[i], "--ignore-reply") == 0) {
++  if (i < argc && strcmp(argv[i], "--ignore-reply") == 0) {
+     ignore_reply = 1;
+     i++;
+   }
