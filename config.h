@@ -5,12 +5,12 @@ static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "MesloLGS NF:size=10" };
+static const char *fonts[]          = { "DejaVu Sans Mono for Powerline:style=Bold" };
 static const int user_bh            = 33; 
 static const int usealtbar          = 1;        /* 1 means use non-dwm status bar */
 static const char *altbarclass = "Polybar";     /* Alternate bar class name */
 static const char *altbarcmd  = "$HOME/bar.sh"; /* Alternate bar launch command */
-static const char dmenufont[]       = "MesloLGS NF:size=10";
+static const char dmenufont[]       = "Fira Mono:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -26,7 +26,7 @@ static const char *colors[][3]      = {
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 /* Default apps */
-static const char *defaulttagapps[] = { "st" };
+static const char *defaulttagapps[] = { "start_mast_window" };
 
 static const Rule rules[] = {
 	/* xprop(1):
