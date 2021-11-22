@@ -4,7 +4,7 @@ typedef struct {
 	Cursor cursor;
 } Cur;
 
-typedef struct Fnt {
+typedef struct Fnt { // 1
 	Display *dpy;
 	unsigned int h;
 	XftFont *xfont;
@@ -15,7 +15,7 @@ typedef struct Fnt {
 enum { ColFg, ColBg, ColBorder }; /* Clr scheme index */
 typedef XftColor Clr;
 
-typedef struct {
+typedef struct { // 1
 	unsigned int w, h;
 	Display *dpy;
 	int screen;

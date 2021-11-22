@@ -1,4 +1,4 @@
-/* See LICENSE file for copyright and license details.
+\/* See LICENSE file for copyright and license details.
  *
  * dynamic window manager is designed like any other X client as well. It is
  * driven through handling X events. In contrast to other X clients, a window
@@ -185,10 +185,10 @@ typedef struct {
 } Rule;
 
 /* function declarations */
-static void applyrules(Client *c);
-static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
-static void arrange(Monitor *m);
-static void arrangemon(Monitor *m);
+static void applyrules(Client *c); // 1
+static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact); // 1
+static void arrange(Monitor *m); // 1
+static void arrangemon(Monitor *m); // 1
 static void attach(Client *c);
 static void attachstack(Client *c);
 static void buttonpress(XEvent *e);
